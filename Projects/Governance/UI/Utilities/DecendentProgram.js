@@ -265,7 +265,7 @@ function newFoundationsUtilitiesDecendentProgram() {
                             distributeProgramPower(childNode, programPower * percentage / 100, 0, percentage)
                         }
                     }
-                    break
+                    return
                 }
                 case userNodeType: {
                     node.payload[programPropertyName].outgoingPower = node.payload.parentNode.payload[programPropertyName].outgoingPower * percentage / 100
@@ -274,19 +274,16 @@ function newFoundationsUtilitiesDecendentProgram() {
                     if (node.payload.referenceParent !== undefined) {
                         distributeProgramPower(node.payload.referenceParent, programPower / 10, 0)
                     }
-                    break
+                    return
                 }
                 case 'User Profile': {
-                    if (node.tokenPowerSwitch !== undefined) {
-                        distributeProgramPower(node.tokenPowerSwitch, programPower, 0)
-                    }
-                    break
-                }
-                case 'Token Power Switch': {
-                    if (node[programPropertyName] !== undefined) {
-                        distributeProgramPower(node[programPropertyName], programPower, 1)
-                    }
-                    break
+                    let program = UI.projects.governance.utilities.validations.onlyOneProgram(node, programNodeType)
+                    if (program === undefined) { return }
+                    if (program.payload === undefined) { return }
+                    if (program.payload[programPropertyName].isActive === false) { return }
+
+                    distributeProgramPower(program, programPower, 0)
+                    return
                 }
             }
         }
@@ -348,7 +345,7 @@ function newFoundationsUtilitiesDecendentProgram() {
                 node.payload.uiObject.statusAngleOffset = 0
                 node.payload.uiObject.statusAtAngle = false
 
-                node.payload.uiObject.setStatus(ownPowerText + ' Own Power' + ' - ' + incomingPowerText + ' Incoming Power' + '')
+                node.payload.uiObject.setStatus(ownPowerText + ' Own Power' + ' + ' + incomingPowerText + ' Incoming ' +  programPowerName)
             }
             if (node.tokensAwarded !== undefined && node.tokensAwarded.payload !== undefined) {
 
