@@ -197,8 +197,8 @@ function newWorkspace() {
 
         function onResponse(err) {
             if (err.result === GLOBAL.DEFAULT_OK_RESPONSE.result) {
-                window.localStorage.setItem('Last Used Workspace', workspace.name)
-                window.localStorage.setItem('Session Timestamp', sessionTimestamp)
+                setLastUsedWorkspace()
+
                 if (ARE_WE_RECORDING_A_MARKET_PANORAMA === false) {
                     UI.projects.foundations.spaces.cockpitSpace.setStatus(workspace.name + ' Saved.', 50, UI.projects.foundations.spaces.cockpitSpace.statusTypes.ALL_GOOD)
                 }
@@ -209,6 +209,11 @@ function newWorkspace() {
                 UI.projects.foundations.spaces.cockpitSpace.setStatus('Could not save the Workspace at the Client. Please check the Client Console for more information.', 150, UI.projects.foundations.spaces.cockpitSpace.statusTypes.WARNING)
             }
         }
+    }
+
+    function setLastUsedWorkspace() {
+        window.localStorage.setItem('Last Used Workspace', UI.projects.foundations.spaces.designSpace.workspace.workspaceNode.name)
+        window.localStorage.setItem('Session Timestamp', sessionTimestamp)
     }
 
     function savePlugins() {
@@ -240,7 +245,7 @@ function newWorkspace() {
                                 let pluginFile = childNode.pluginFiles[k]
 
                                 let saveWithWorkspace = UI.projects.foundations.utilities.nodeConfig.loadConfigProperty(pluginFile.payload, 'saveWithWorkspace')
-                                //UI.projects.foundations.utilities.plugins.savePluginFile(pluginFile)
+                                UI.projects.foundations.utilities.plugins.savePluginFile(pluginFile)
                             }
                         }
                             break
@@ -412,6 +417,7 @@ function newWorkspace() {
                         await UI.projects.education.spaces.tutorialSpace.reset()
 
                         runTasksAndSessions()
+                        setLastUsedWorkspace()
                         break
                     }
             }

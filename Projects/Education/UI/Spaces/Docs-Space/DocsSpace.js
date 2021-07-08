@@ -101,22 +101,31 @@ function newEducationDocSpace() {
                 Getting the currentBranch
                 */
                 let workspace = UI.projects.foundations.spaces.designSpace.workspace.workspaceNode
-                let currentBranch = UI.projects.foundations.utilities.nodeConfig.loadConfigProperty(workspace.payload, 'currentBranch')
 
-                if (currentBranch === undefined) {
-                    UI.projects.foundations.utilities.nodeConfig.saveConfigProperty(workspace.payload, 'currentBranch', UI.projects.education.globals.docs.DEFAULT_CURRENT_BRANCH)
-                    UI.projects.education.spaces.docsSpace.currentBranch = UI.projects.education.globals.docs.DEFAULT_CURRENT_BRANCH
-                } else {
-                    UI.projects.education.spaces.docsSpace.currentBranch = currentBranch
-                }
-                /*
-                Every time this setup occurs, we will automatically change to the currentBranch of the workspace.
-                */
-                //changeCurrentBranch(UI.projects.education.spaces.docsSpace.currentBranch, true)
+                httpRequest(undefined, 'App/Branch', onResponse)
                 /*
                 Deleting what was is here because is not longer used...
                 */
                 window.localStorage.removeItem('Current Branch')
+                UI.projects.foundations.utilities.nodeConfig.saveConfigProperty(workspace.payload, 'currentBranch', undefined)
+
+                function onResponse(err, data) {
+                    /* Lets check the result of the call through the http interface */
+                    data = JSON.parse(data)
+                    if (err.result === GLOBAL.DEFAULT_OK_RESPONSE.result && data.result === GLOBAL.CUSTOM_OK_RESPONSE.result) {
+                        let currentBranch = data.message.current
+                        UI.projects.education.spaces.docsSpace.currentBranch = currentBranch
+                    } else {
+                        UI.projects.education.spaces.docsSpace.navigateTo(
+                            data.docs.project,
+                            data.docs.category,
+                            data.docs.type,
+                            data.docs.anchor,
+                            undefined,
+                            data.docs.placeholder
+                        )
+                    }
+                }
             }
 
             function setupContributionsBranch() {
@@ -164,6 +173,8 @@ function newEducationDocSpace() {
             function setupSidePanelTab() {
                 thisObject.sidePanelTab = newSidePanelTab()
                 thisObject.sidePanelTab.container.connectToParent(thisObject.container, false, false)
+                thisObject.sidePanelTab.tabIcon = UI.projects.foundations.spaces.designSpace.getIconByProjectAndName('Education', 'docs-tab')
+                thisObject.sidePanelTab.tabLabel = 'Docs'
                 thisObject.sidePanelTab.initialize('right')
                 openingEventSubscriptionId = thisObject.sidePanelTab.container.eventHandler.listenToEvent('opening', onOpening)
                 closingEventSubscriptionId = thisObject.sidePanelTab.container.eventHandler.listenToEvent('closing', onClosing)
