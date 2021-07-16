@@ -718,7 +718,7 @@
     /* Info Tables */
     .governance-info-table {
     background-color: transparent;
-    max-width: 100%;
+    width: 100%;
     margin-bottom: 20px;
     margin-top: 20px;
     /* border: 1px solid #cdcdcd; DELETE Candidate*/
@@ -739,11 +739,14 @@
     
     .governance-info-table > thead > tr > th > a {
     vertical-align: middle;
-    text-transform: none;
-    background-color: #333;
+    text-decoration: none;
     color: white;
     text-align: left;
     }
+
+    .governance-info-table > thead > tr > th {
+        background-color: #333;
+        }
     
     .governance-info-table > tbody > tr > td {
     /* border-top: 1px solid #cdcdcd; DELETE Candidate*/
@@ -828,7 +831,8 @@
     
     .governance-report-page-header-tabs-container {
     display: table;
-    padding-left: 180px;
+    text-align: right;
+    align-content: right;
     margin-top: 20px;
     caret-color: transparent;
     }
@@ -860,22 +864,23 @@
     /* Search Results Page Content */
     .governance-search-result-content {
     border-top: 1px solid #0295aa;
-    margin-left: -180px;
     caret-color: transparent;
+    text-align: left;
+    align-content: left;
     }
     
     .governance-search-result-content > div {
     display: none;
     }
     
-    #tab1:checked ~ .governance-search-result-content #content1,
-    #tab2:checked ~ .governance-search-result-content #content2,
-    #tab3:checked ~ .governance-search-result-content #content3,
-    #tab4:checked ~ .governance-search-result-content #content4,
-    #tab5:checked ~ .governance-search-result-content #content5,
-    #tab6:checked ~ .governance-search-result-content #content6,
-    #tab7:checked ~ .governance-search-result-content #content7,
-    #tab8:checked ~ .governance-search-result-content #content8 {
+    #governance-tab1:checked ~ .governance-search-result-content #content1,
+    #governance-tab2:checked ~ .governance-search-result-content #content2,
+    #governance-tab3:checked ~ .governance-search-result-content #content3,
+    #governance-tab4:checked ~ .governance-search-result-content #content4,
+    #governance-tab5:checked ~ .governance-search-result-content #content5,
+    #governance-tab6:checked ~ .governance-search-result-content #content6,
+    #governance-tab7:checked ~ .governance-search-result-content #content7,
+    #governance-tab8:checked ~ .governance-search-result-content #content8 {
     display: block;
     }
     
