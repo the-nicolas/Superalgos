@@ -1,4 +1,4 @@
-function newGovernanceReportsReferrals() {
+function newGovernanceReportsPools() {
     let thisObject = {
         addHTML: addHTML,
         initialize: initialize,
@@ -16,10 +16,10 @@ function newGovernanceReportsReferrals() {
     }
 
     function addHTML(tabIndex, filters) {
-        return UI.projects.governance.utilities.decendentTables.addHTML(
-            'referrals',
-            'Referral Program',
-            'referralProgram',
+        return UI.projects.governance.utilities.commonTables.addHTML(
+            'pools',
+            'Pool',
+            'Pools',
             tabIndex, 
             filters
         )

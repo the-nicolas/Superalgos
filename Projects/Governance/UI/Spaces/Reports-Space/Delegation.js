@@ -1,4 +1,4 @@
-function newGovernanceReportsUserProfiles() {
+function newGovernanceReportsDelegation() {
     let thisObject = {
         addHTML: addHTML,
         initialize: initialize,
@@ -16,7 +16,12 @@ function newGovernanceReportsUserProfiles() {
     }
 
     function addHTML(tabIndex, filters) {
-
+        /*
+        Parameters
+        */
+        let table = 'delegation'
+        let programName = 'Delegation Program'
+        let programPropertyName = 'delegationProgram'
         /*
         Setup Filters
         */
@@ -30,7 +35,6 @@ function newGovernanceReportsUserProfiles() {
         Other Variables
         */
         let tableRecords = []
-        let table = 'userProfiles'
         let tableRecordDefinition = {
             "properties": [
                 {
@@ -41,24 +45,16 @@ function newGovernanceReportsUserProfiles() {
                     "textAlign": "left"
                 },
                 {
-                    "name": "blockchainPower",
-                    "label": "Blockchain Power",
+                    "name": "ownPower",
+                    "label": "Delegate Power",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
                     "format": "2 decimals"
                 },
                 {
-                    "name": "delegatedPower",
-                    "label": "Delegated Power",
-                    "type": "number",
-                    "order": "descending",
-                    "textAlign": "center",
-                    "format": "2 decimals"
-                },
-                {
-                    "name": "tokenPower",
-                    "label": "Token Power",
+                    "name": "tokensBonus",
+                    "label": "Bonus",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
@@ -76,11 +72,15 @@ function newGovernanceReportsUserProfiles() {
         for (let j = 0; j < userProfiles.length; j++) {
             let userProfile = userProfiles[j]
 
+            if (userProfile.tokenPowerSwitch === undefined) { continue }
+            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, programName)
+            if (program === undefined) { continue }
+            if (program.payload === undefined) { continue }
+
             let tableRecord = {
                 "name": userProfile.name,
-                "blockchainPower": userProfile.payload.blockchainTokens | 0,
-                "delegatedPower": userProfile.payload.tokenPower - userProfile.payload.blockchainTokens | 0,
-                "tokenPower": userProfile.payload.tokenPower | 0
+                "ownPower": program.payload[programPropertyName].ownPower | 0,
+                "tokensBonus": program.payload[programPropertyName].bonus.tokens | 0
             }
 
             if (UI.projects.governance.utilities.filters.applyFilters(filters, filtersObject, tableRecord) === true) {
@@ -96,7 +96,7 @@ function newGovernanceReportsUserProfiles() {
         */
         if (sortingOrder === undefined) {
             UI.projects.governance.spaces.reportsSpace.tablesSortingOrders[table] = {
-                property: 'blockchainPower',
+                property: 'tokensBonus',
                 order: 'descending'
             }
             sortingOrder = UI.projects.governance.spaces.reportsSpace.tablesSortingOrders[table]

@@ -1,22 +1,17 @@
-function newGovernanceReportsUserProfiles() {
+function newGovernanceUtilitiesCommonTables() {
     let thisObject = {
-        addHTML: addHTML,
-        initialize: initialize,
-        finalize: finalize
+        addHTML: addHTML
     }
 
     return thisObject
 
-    function initialize() {
-
-    }
-
-    function finalize() {
-
-    }
-
-    function addHTML(tabIndex, filters) {
-
+    function addHTML(
+        table,
+        nodeType,
+        hierarchyHeadsType,
+        tabIndex,
+        filters
+    ) {
         /*
         Setup Filters
         */
@@ -26,39 +21,35 @@ function newGovernanceReportsUserProfiles() {
                 filtersObject = JSON.parse(filters)
             } catch (err) { }
         }
-        /*
-        Other Variables
-        */
         let tableRecords = []
-        let table = 'userProfiles'
         let tableRecordDefinition = {
             "properties": [
                 {
                     "name": "name",
-                    "label": "User Profile",
+                    "label": "Name",
                     "type": "string",
                     "order": "ascending",
                     "textAlign": "left"
                 },
                 {
-                    "name": "blockchainPower",
-                    "label": "Blockchain Power",
+                    "name": "tokensReward",
+                    "label": "Tokens Reward",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
                     "format": "2 decimals"
                 },
                 {
-                    "name": "delegatedPower",
-                    "label": "Delegated Power",
+                    "name": "weight",
+                    "label": "Weight",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
-                    "format": "2 decimals"
+                    "format": "percentage"
                 },
                 {
-                    "name": "tokenPower",
-                    "label": "Token Power",
+                    "name": "weightPower",
+                    "label": "Weight Power",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
@@ -69,18 +60,18 @@ function newGovernanceReportsUserProfiles() {
         /*
         Here we get from the workspace all User Profiles.
         */
-        let userProfiles = UI.projects.foundations.spaces.designSpace.workspace.getHierarchyHeadsByNodeType('User Profile')
+        let nodes = UI.projects.foundations.spaces.designSpace.workspace.getNodesByTypeAndHierarchyHeadsType(nodeType, hierarchyHeadsType)
         /*
         Transform the result array into table records.
         */
-        for (let j = 0; j < userProfiles.length; j++) {
-            let userProfile = userProfiles[j]
+        for (let j = 0; j < nodes.length; j++) {
+            let node = nodes[j]
 
             let tableRecord = {
-                "name": userProfile.name,
-                "blockchainPower": userProfile.payload.blockchainTokens | 0,
-                "delegatedPower": userProfile.payload.tokenPower - userProfile.payload.blockchainTokens | 0,
-                "tokenPower": userProfile.payload.tokenPower | 0
+                "name": node.name,
+                "tokensReward": node.payload.tokens | 0,
+                "weight": node.payload.weight,
+                "weightPower": node.payload.votingProgram.votes
             }
 
             if (UI.projects.governance.utilities.filters.applyFilters(filters, filtersObject, tableRecord) === true) {
@@ -96,7 +87,7 @@ function newGovernanceReportsUserProfiles() {
         */
         if (sortingOrder === undefined) {
             UI.projects.governance.spaces.reportsSpace.tablesSortingOrders[table] = {
-                property: 'blockchainPower',
+                property: 'tokensReward',
                 order: 'descending'
             }
             sortingOrder = UI.projects.governance.spaces.reportsSpace.tablesSortingOrders[table]

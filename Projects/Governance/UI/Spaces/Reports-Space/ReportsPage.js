@@ -5,6 +5,7 @@ function newGovernanceReportsReportsPage() {
         finalize: finalize
     }
 
+    let lastTabIndex
     return thisObject
 
     function initialize() {
@@ -15,17 +16,24 @@ function newGovernanceReportsReportsPage() {
 
     }
 
-    function render(tabIndex) {
+    function render(tabIndex, filters) {
+
+        /* Setup tabIndex */
+        if (tabIndex === undefined) {
+            tabIndex = lastTabIndex
+        } else {
+            lastTabIndex = tabIndex
+        }
 
         let resultsArary = []
         let initialTime = new Date()
         buildHTML()
 
         function buildHTML() {
-            const tabs = ['Profiles', 'Referrals', 'Supporters', 'Mentors', 'Pools', 'Assets', 'Features', 'Positions']
+            const tabs = ['Profiles', 'Referrals', 'Supporters', 'Mentors', 'Claims', 'Votes', 'Staking', 'Delegation', 'Pools', 'Assets', 'Features', 'Positions', 'Mining']
             let HTML = ''
             HTML = HTML + '<section id="governance-report-page-div" class="governance-search-page-container">'
-            HTML = HTML + UI.projects.education.spaces.docsSpace.mainSearchPage.addSearchHeader()
+            HTML = HTML + UI.projects.governance.spaces.reportsSpace.filtersHeader.addFilterHeader()
 
             // Tabs
             HTML = HTML + '<div class="governance-report-page-header-tabs-container">'
@@ -49,13 +57,79 @@ function newGovernanceReportsReportsPage() {
 
                 switch (tab) {
                     case 'Profiles': {
-                        let response = UI.projects.governance.spaces.reportsSpace.userProfiles.addHTML(1)
+                        let response = UI.projects.governance.spaces.reportsSpace.userProfiles.addHTML(1, filters)
                         HTML = HTML + response.HTML
                         resultCounter = response.resultCounter
                         break
                     }
                     case 'Referrals': {
-                        let response = UI.projects.governance.spaces.reportsSpace.referrals.addHTML(2)
+                        let response = UI.projects.governance.spaces.reportsSpace.referrals.addHTML(2, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Supporters': {
+                        let response = UI.projects.governance.spaces.reportsSpace.supports.addHTML(3, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Mentors': {
+                        let response = UI.projects.governance.spaces.reportsSpace.mentors.addHTML(4, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Claims': {
+                        let response = UI.projects.governance.spaces.reportsSpace.claims.addHTML(5, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Votes': {
+                        let response = UI.projects.governance.spaces.reportsSpace.votes.addHTML(6, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Staking': {
+                        let response = UI.projects.governance.spaces.reportsSpace.staking.addHTML(7, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Delegation': {
+                        let response = UI.projects.governance.spaces.reportsSpace.delegation.addHTML(8, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Pools': {
+                        let response = UI.projects.governance.spaces.reportsSpace.pools.addHTML(9, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Assets': {
+                        let response = UI.projects.governance.spaces.reportsSpace.assets.addHTML(10, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Features': {
+                        let response = UI.projects.governance.spaces.reportsSpace.features.addHTML(11, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Positions': {
+                        let response = UI.projects.governance.spaces.reportsSpace.positions.addHTML(12, filters)
+                        HTML = HTML + response.HTML
+                        resultCounter = response.resultCounter
+                        break
+                    }
+                    case 'Mining': {
+                        let response = UI.projects.governance.spaces.reportsSpace.mining.addHTML(13, filters)
                         HTML = HTML + response.HTML
                         resultCounter = response.resultCounter
                         break
@@ -87,8 +161,8 @@ function newGovernanceReportsReportsPage() {
 
             docsContentDiv.innerHTML = HTML + UI.projects.governance.spaces.reportsSpace.footer.addFooter()
 
-            UI.projects.education.spaces.docsSpace.mainSearchPage.detectEnterOnSearchBox()
-            UI.projects.education.spaces.docsSpace.mainSearchPage.setFocusOnSearchBox()
+            UI.projects.governance.spaces.reportsSpace.filtersHeader.detectEnterOnFiltersBox()
+            UI.projects.governance.spaces.reportsSpace.filtersHeader.setFocusOnFiltersBox()
 
             // If there is a tabIndex we will switch to that tab here.
             if (tabIndex !== undefined) {

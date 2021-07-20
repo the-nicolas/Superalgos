@@ -6,8 +6,20 @@ function newGobernanceReportsSpace() {
         sidePanelTab: undefined,
         reportsPage: undefined,
         footer: undefined,
+        filtersHeader: undefined,
         userProfiles: undefined,
         referrals: undefined,
+        supports: undefined,
+        mentors: undefined,
+        claims: undefined,
+        votes: undefined,
+        staking: undefined,
+        delegations: undefined,
+        pools: undefined,
+        assets: undefined,
+        features: undefined,
+        positions: undefined,
+        mining: undefined,
         tablesSortingOrders: undefined,
         changeTableSortingOrder,
         physics: physics,
@@ -46,11 +58,47 @@ function newGobernanceReportsSpace() {
         thisObject.footer.finalize()
         thisObject.footer = undefined
 
+        thisObject.filtersHeader.finalize()
+        thisObject.filtersHeader = undefined
+
         thisObject.userProfiles.finalize()
         thisObject.userProfiles = undefined
 
         thisObject.referrals.finalize()
         thisObject.referrals = undefined
+
+        thisObject.supports.finalize()
+        thisObject.supports = undefined
+
+        thisObject.mentors.finalize()
+        thisObject.mentors = undefined
+
+        thisObject.claims.finalize()
+        thisObject.claims = undefined
+
+        thisObject.votes.finalize()
+        thisObject.votes = undefined
+
+        thisObject.staking.finalize()
+        thisObject.staking = undefined
+
+        thisObject.delegation.finalize()
+        thisObject.delegation = undefined
+
+        thisObject.pools.finalize()
+        thisObject.pools = undefined
+
+        thisObject.assets.finalize()
+        thisObject.assets = undefined
+
+        thisObject.features.finalize()
+        thisObject.features = undefined
+
+        thisObject.positions.finalize()
+        thisObject.positions = undefined
+
+        thisObject.mining.finalize()
+        thisObject.mining = undefined
 
         isInitialized = false
     }
@@ -71,13 +119,36 @@ function newGobernanceReportsSpace() {
 
         thisObject.reportsPage = newGovernanceReportsReportsPage()
         thisObject.footer = newGovernanceReportsFooter()
+        thisObject.filtersHeader = newGovernanceReportsFiltersHeader()
         thisObject.userProfiles = newGovernanceReportsUserProfiles()
         thisObject.referrals = newGovernanceReportsReferrals()
+        thisObject.supports = newGovernanceReportsSupports()
+        thisObject.mentors = newGovernanceReportsMentors()
+        thisObject.claims = newGovernanceReportsClaims()
+        thisObject.votes = newGovernanceReportsVotes()
+        thisObject.staking = newGovernanceReportsStaking()
+        thisObject.delegation = newGovernanceReportsDelegation()
+        thisObject.pools = newGovernanceReportsPools()
+        thisObject.assets = newGovernanceReportsAssets()
+        thisObject.features = newGovernanceReportsFeatures()
+        thisObject.positions = newGovernanceReportsPositions()
+        thisObject.mining = newGovernanceReportsMining()
 
         thisObject.reportsPage.initialize()
         thisObject.footer.initialize()
+        thisObject.filtersHeader.initialize()
         thisObject.userProfiles.initialize()
         thisObject.referrals.initialize()
+        thisObject.mentors.initialize()
+        thisObject.claims.initialize()
+        thisObject.votes.initialize()
+        thisObject.staking.initialize()
+        thisObject.delegation.initialize()
+        thisObject.pools.initialize()
+        thisObject.assets.initialize()
+        thisObject.features.initialize()
+        thisObject.positions.initialize()
+        thisObject.mining.initialize()        
 
         setupSidePanelTab()
 
