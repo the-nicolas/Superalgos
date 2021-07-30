@@ -1,4 +1,4 @@
-function newGovernanceReportsDelegation() {
+function newGovernanceReportsAirdrop() {
     let thisObject = {
         addHTML: addHTML,
         initialize: initialize,
@@ -19,9 +19,9 @@ function newGovernanceReportsDelegation() {
         /*
         Parameters
         */
-        let table = 'delegation'
-        let programName = 'Delegation Program'
-        let programPropertyName = 'delegationProgram'
+        let table = 'airdrop'
+        let programName = 'Airdrop Program'
+        let programPropertyName = 'airdropProgram'
         /*
         Setup Filters
         */
@@ -45,16 +45,16 @@ function newGovernanceReportsDelegation() {
                     "textAlign": "left"
                 },
                 {
-                    "name": "ownPower",
-                    "label": "Delegate Power",
+                    "name": "airdropPower",
+                    "label": "Airdrop Power",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
                     "format": "2 decimals"
                 },
                 {
-                    "name": "tokensBonus",
-                    "label": "Bonus",
+                    "name": "tokensAwarded",
+                    "label": "Awarded",
                     "type": "number",
                     "order": "descending",
                     "textAlign": "center",
@@ -80,8 +80,8 @@ function newGovernanceReportsDelegation() {
 
             let tableRecord = {
                 "name": userProfile.name,
-                "ownPower": program.payload[programPropertyName].ownPower | 0,
-                "tokensBonus": program.payload[programPropertyName].bonus.tokens | 0
+                "airdropPower": program.payload[programPropertyName].ownPower | 0,
+                "tokensAwarded": program.payload[programPropertyName].awarded.tokens | 0
             }
 
             if (UI.projects.governance.utilities.filters.applyFilters(filters, filtersObject, tableRecord) === true) {
@@ -97,7 +97,7 @@ function newGovernanceReportsDelegation() {
         */
         if (sortingOrder === undefined) {
             UI.projects.governance.spaces.reportsSpace.tablesSortingOrders[table] = {
-                property: 'tokensBonus',
+                property: 'tokensAwarded',
                 order: 'descending'
             }
             sortingOrder = UI.projects.governance.spaces.reportsSpace.tablesSortingOrders[table]

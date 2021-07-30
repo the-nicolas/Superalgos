@@ -141,9 +141,9 @@ function newGovernanceFunctionLibraryGithubProgram() {
             if (programNode === undefined || programNode.payload === undefined) { return }
             /*
             Here we will convert Token Power into Github Power. 
-            As per system rules Github Powar = tokensPower
+            As per system rules Github Powar = 1200 SA Tokens.
             */
-            let programPower = programNode.payload.tokenPower
+            let programPower = 3000
             programNode.payload.githubProgram.ownPower = programPower
 
             accumulatedProgramPower = accumulatedProgramPower + programPower
@@ -189,11 +189,12 @@ function newGovernanceFunctionLibraryGithubProgram() {
             if (node.tokensAwarded !== undefined && node.tokensAwarded.payload !== undefined) {
 
                 const tokensAwardedText = parseFloat(node.payload.githubProgram.awarded.tokens.toFixed(0)).toLocaleString('en')
+                const tokensAwardedBTC = ' ≃ ' + UI.projects.governance.utilities.conversions.estimateSATokensInBTC(node.payload.githubProgram.awarded.tokens | 0) + '  BTC'
 
                 node.tokensAwarded.payload.uiObject.valueAngleOffset = 0
                 node.tokensAwarded.payload.uiObject.valueAtAngle = false
 
-                node.tokensAwarded.payload.uiObject.setValue(tokensAwardedText + ' SA Tokens')
+                node.tokensAwarded.payload.uiObject.setValue(tokensAwardedText + ' SA Tokens' + tokensAwardedBTC)
 
                 node.tokensAwarded.payload.uiObject.statusAngleOffset = 0
                 node.tokensAwarded.payload.uiObject.statusAtAngle = false

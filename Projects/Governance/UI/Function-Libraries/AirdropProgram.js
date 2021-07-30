@@ -1,4 +1,4 @@
-function newGovernanceFunctionLibraryStakingProgram() {
+function newGovernanceFunctionLibraryAirdropProgram() {
     let thisObject = {
         calculate: calculate
     }
@@ -12,7 +12,7 @@ function newGovernanceFunctionLibraryStakingProgram() {
         let programPoolTokenReward
         /*
         In order to be able to calculate the share of the Program Pool for each User Profile,
-        we need to accumulate all the Staking Power that each User Profile at their Program
+        we need to accumulate all the Airdrop Power that each User Profile at their Program
         node has, because with that Power is that each Program node gets a share of the pool.
          */
         let accumulatedProgramPower = 0
@@ -20,7 +20,7 @@ function newGovernanceFunctionLibraryStakingProgram() {
         /* Scan Pools Until finding the Mentoship-Program Pool */
         for (let i = 0; i < pools.length; i++) {
             let poolsNode = pools[i]
-            programPoolTokenReward = UI.projects.governance.utilities.pools.findPool(poolsNode, "Staking-Rewards")
+            programPoolTokenReward = UI.projects.governance.utilities.pools.findPool(poolsNode, "Airdrop-Rewards")
         }
         if (programPoolTokenReward === undefined || programPoolTokenReward === 0) { return }
 
@@ -28,7 +28,7 @@ function newGovernanceFunctionLibraryStakingProgram() {
             let userProfile = userProfiles[i]
 
             if (userProfile.tokenPowerSwitch === undefined) { continue }
-            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Staking Program")
+            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Airdrop Program")
             if (program === undefined) { continue }
             if (program.payload === undefined) { continue }
 
@@ -38,7 +38,7 @@ function newGovernanceFunctionLibraryStakingProgram() {
             let userProfile = userProfiles[i]
 
             if (userProfile.tokenPowerSwitch === undefined) { continue }
-            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Staking Program")
+            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Airdrop Program")
             if (program === undefined) { continue }
             if (program.payload === undefined) { continue }
 
@@ -48,10 +48,10 @@ function newGovernanceFunctionLibraryStakingProgram() {
             let userProfile = userProfiles[i]
 
             if (userProfile.tokenPowerSwitch === undefined) { continue }
-            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Staking Program")
+            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Airdrop Program")
             if (program === undefined) { continue }
             if (program.payload === undefined) { continue }
-            if (program.payload.stakingProgram.isActive === false) { continue }
+            if (program.payload.airdropProgram.isActive === false) { continue }
 
             distributeProgram(program)
         }
@@ -59,10 +59,10 @@ function newGovernanceFunctionLibraryStakingProgram() {
             let userProfile = userProfiles[i]
 
             if (userProfile.tokenPowerSwitch === undefined) { continue }
-            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Staking Program")
+            let program = UI.projects.governance.utilities.validations.onlyOneProgram(userProfile, "Airdrop Program")
             if (program === undefined) { continue }
             if (program.payload === undefined) { continue }
-            if (program.payload.stakingProgram.isActive === false) { continue }
+            if (program.payload.airdropProgram.isActive === false) { continue }
 
             calculateProgram(program)
         }
@@ -70,8 +70,8 @@ function newGovernanceFunctionLibraryStakingProgram() {
         function resetProgram(node) {
             if (node === undefined) { return }
             if (node.payload === undefined) { return }
-            if (node.payload.stakingProgram === undefined) {
-                node.payload.stakingProgram = {
+            if (node.payload.airdropProgram === undefined) {
+                node.payload.airdropProgram = {
                     count: 0,
                     percentage: 0,
                     outgoingPower: 0,
@@ -83,12 +83,12 @@ function newGovernanceFunctionLibraryStakingProgram() {
                     }
                 }
             } else {
-                node.payload.stakingProgram.count = 0
-                node.payload.stakingProgram.percentage = 0
-                node.payload.stakingProgram.outgoingPower = 0
-                node.payload.stakingProgram.ownPower = 0
-                node.payload.stakingProgram.incomingPower = 0
-                node.payload.stakingProgram.awarded = {
+                node.payload.airdropProgram.count = 0
+                node.payload.airdropProgram.percentage = 0
+                node.payload.airdropProgram.outgoingPower = 0
+                node.payload.airdropProgram.ownPower = 0
+                node.payload.airdropProgram.incomingPower = 0
+                node.payload.airdropProgram.awarded = {
                     tokens: 0,
                     percentage: 0
                 }
@@ -98,27 +98,39 @@ function newGovernanceFunctionLibraryStakingProgram() {
         function validateProgram(node, userProfile) {
             /*
             This program is not going to run unless the Profile has Tokens, and for 
-            that users needs to execute the setup procedure of signing their Github
+            that users needs to execute the setup procedure of signing their Airdrop
             username with their private key.
             */
             if (
                 userProfile.payload.blockchainTokens === undefined
             ) {
-                node.payload.stakingProgram.isActive = false
+                node.payload.airdropProgram.isActive = false
                 userProfile.payload.uiObject.setErrorMessage("You need to setup this profile with the Profile Constructor, to access the Token Power of your account at the Blockchain.")
                 return
             }
-            node.payload.stakingProgram.isActive = true
+            /*
+            Next thing to do is to validate if the airdrop user profile has a star at the Superalgos repository. 
+            */
+            let profileSignature = UI.projects.foundations.utilities.nodeConfig.loadConfigProperty(userProfile.payload, 'signature')
+            if (
+                profileSignature === undefined
+            ) {
+                node.payload.airdropProgram.isActive = false
+                userProfile.payload.uiObject.setErrorMessage("You need to setup this profile with the Profile Constructor, and produce a signature of your Airdrop Username.")
+                return
+            }
+
+            node.payload.airdropProgram.isActive = true
         }
 
         function distributeProgram(programNode) {
             if (programNode === undefined || programNode.payload === undefined) { return }
             /*
-            Here we will convert Token Power into Staking Power. 
-            As per system rules Staking Powar = tokensPower
+            Here we will convert Token Power into Airdrop Power. 
+            As per system rules Airdrop Powar = 1000 SA Tokens.
             */
-            let programPower = programNode.payload.tokenPower
-            programNode.payload.stakingProgram.ownPower = programPower
+            let programPower = 1000
+            programNode.payload.airdropProgram.ownPower = programPower
 
             accumulatedProgramPower = accumulatedProgramPower + programPower
         }
@@ -144,7 +156,7 @@ function newGovernanceFunctionLibraryStakingProgram() {
                 programNode.payload.uiObject.setErrorMessage("Tokens Awarded Node is needed in order for this Program to get Tokens from the Program Pool.")
                 return
             }
-            programNode.payload.stakingProgram.awarded.tokens = programNode.payload.stakingProgram.ownPower / totalPowerRewardRatio
+            programNode.payload.airdropProgram.awarded.tokens = programNode.payload.airdropProgram.ownPower / totalPowerRewardRatio 
 
             drawProgram(programNode)
         }
@@ -152,22 +164,27 @@ function newGovernanceFunctionLibraryStakingProgram() {
         function drawProgram(node) {
             if (node.payload !== undefined) {
 
-                const ownPowerText = parseFloat(node.payload.stakingProgram.ownPower.toFixed(0)).toLocaleString('en')
+                const ownPowerText = parseFloat(node.payload.airdropProgram.ownPower.toFixed(0)).toLocaleString('en')
 
                 node.payload.uiObject.statusAngleOffset = 0
                 node.payload.uiObject.statusAtAngle = false
 
-                node.payload.uiObject.setStatus(ownPowerText + ' Staking Power')
+                node.payload.uiObject.setStatus(ownPowerText + ' Airdrop Power')
             }
             if (node.tokensAwarded !== undefined && node.tokensAwarded.payload !== undefined) {
 
-                const tokensAwardedText = parseFloat(node.payload.stakingProgram.awarded.tokens.toFixed(0)).toLocaleString('en')
-                const tokensAwardedBTC = ' ≃ ' + UI.projects.governance.utilities.conversions.estimateSATokensInBTC(node.payload.stakingProgram.awarded.tokens | 0) + '  BTC'
+                const tokensAwardedText = parseFloat(node.payload.airdropProgram.awarded.tokens.toFixed(0)).toLocaleString('en')
+                const tokensAwardedBTC = ' ≃ ' + UI.projects.governance.utilities.conversions.estimateSATokensInBTC(node.payload.airdropProgram.awarded.tokens | 0) + '  BTC'
 
                 node.tokensAwarded.payload.uiObject.valueAngleOffset = 0
                 node.tokensAwarded.payload.uiObject.valueAtAngle = false
 
                 node.tokensAwarded.payload.uiObject.setValue(tokensAwardedText + ' SA Tokens' + tokensAwardedBTC)
+
+                node.tokensAwarded.payload.uiObject.statusAngleOffset = 0
+                node.tokensAwarded.payload.uiObject.statusAtAngle = false
+
+                node.tokensAwarded.payload.uiObject.setStatus('For creating your Superalgos profile!')
             }
         }
     }
