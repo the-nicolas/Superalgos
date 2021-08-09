@@ -157,7 +157,10 @@ function newWorkspace() {
         let workspace = UI.projects.foundations.spaces.designSpace.workspace.workspaceNode
 
         /* Validation if it is too early to save. */
-        if (thisObject.isInitialized === false) { return }
+        if (thisObject.isInitialized === false) { 
+            console.log('Workspace not saved because it has not been initialized. =')
+            return 
+        }
 
         /* Validation of 2 sessions opened at the same time. */
         let savedSessionTimestamp = window.localStorage.getItem('Session Timestamp')
@@ -557,6 +560,9 @@ function newWorkspace() {
             let hierarchyHead = hierarchyHeads[i]
             let hierarchyHeadCodeName = UI.projects.foundations.utilities.nodeConfig.loadConfigProperty(hierarchyHead.payload, 'codeName')
             if (hierarchyHeadCodeName === codeName && hierarchyHead.type === nodeType) {
+                return hierarchyHead
+            } else if (hierarchyHead.name === codeName && hierarchyHead.type === nodeType) {
+                // This condition is used for auto fixing references in UiObjectsFromNodes.js
                 return hierarchyHead
             }
         }

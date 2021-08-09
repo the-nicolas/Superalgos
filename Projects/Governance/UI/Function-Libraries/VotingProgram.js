@@ -517,7 +517,7 @@ function newGovernanceFunctionLibraryVotingProgram() {
             ) {
                 originNode.name = destinationNode.name + ' ' + destinationNode.type + ' ' + ' Vote'
             } else {
-                originNode.name = destinationNode.name + ' ' + destinationNode.type
+                originNode.name = destinationNode.name 
             }
 
             let schemaDocument = getSchemaDocument(destinationNode)
@@ -538,7 +538,7 @@ function newGovernanceFunctionLibraryVotingProgram() {
                             if (originNodeChild === undefined) {
                                 originNodeChild = UI.projects.foundations.functionLibraries.uiObjectsFromNodes.addUIObject(originNode, originNodeChildType)
                             }
-                            originNodeChild.payload.referenceParent = destinationNodeChild
+                            UI.projects.foundations.functionLibraries.attachDetach.referenceAttachNode(originNodeChild, destinationNodeChild)
                             scanNodeBranch(originNodeChild, destinationNodeChild)
                         }
                             break
@@ -555,7 +555,7 @@ function newGovernanceFunctionLibraryVotingProgram() {
                                     if (originNodeChild === undefined) {
                                         originNodeChild = UI.projects.foundations.functionLibraries.uiObjectsFromNodes.addUIObject(originNode, originNodeChildType)
                                     }
-                                    originNodeChild.payload.referenceParent = destinationNodeChild
+                                    UI.projects.foundations.functionLibraries.attachDetach.referenceAttachNode(originNodeChild, destinationNodeChild)
                                     scanNodeBranch(originNodeChild, destinationNodeChild)
                                 }
                             }
